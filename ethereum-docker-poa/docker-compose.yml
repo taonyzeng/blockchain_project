@@ -1,0 +1,45 @@
+version: '2'
+services:
+  bootstrap:
+    build: monitored-geth-client
+    restart: on-failure
+    container_name: bootstrap-poa
+    hostname: bootstrap
+    links:
+      - netstats
+    entrypoint: /root/start.sh
+    command: '--datadir=~/.ethereum/devchain --nodekeyhex=a4e0d6ea0b7acb51e5fe4da524fe5169ce1df1d2c1802a0da8cf034f02d0fbfd --unlock "0x1f7f0f7be634d340eb070f3f3c21b6ce4ab857bd" --password /root/files/pw --http.api="personal,eth,net,web3" --http.corsdomain="*" --networkid=856520 --port 30304 --http --http.addr="0.0.0.0" --ws --ws.addr="0.0.0.0" --ws.origins="*" --ws.api="personal,eth,net,web3" --allow-insecure-unlock'
+    volumes:
+      - ./files/password:/root/files/password:ro
+      - ./files/genesis.json:/root/files/genesis.json:ro
+      - ./files/keystore:/root/.ethereum/devchain/keystore:rw
+      - /etc/localtime:/etc/localtime:ro
+      - ./files/pw:/root/files/pw:ro
+    ports:
+      - "30304:30304"
+      - "30304:30304/udp"
+      - "9545:8545"
+      - "9546:8546"
+  eth:
+    build: monitored-geth-client
+    restart: on-failure
+    links:
+      - bootstrap
+      - netstats
+    entrypoint: /root/start.sh
+    volumes:
+      - ./files/password:/root/files/password:ro
+      - ./files/genesis.json:/root/files/genesis.json:ro
+      - ./files/keystore:/root/.ethereum/devchain/keystore:rw
+      - /etc/localtime:/etc/localtime:ro
+    command: '--datadir=~/.ethereum/devchain --http.corsdomain="*" --networkid=856520 --http --allow-insecure-unlock --bootnodes="enode://75bf121648945c02e28d2d459776a724b09fcecaa95fa9dca6fffe0fe09700dcce1fa2c09dbb5e814b0b861749e463328a4b5ea68d67d93340e724fd72ce97cf@XXX:30304"'
+  netstats:
+    build: eth-netstats
+    restart: on-failure
+    container_name: netstats-poa
+    environment:
+      - WS_SECRET=eth-net-stats-secret
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3099:3000"

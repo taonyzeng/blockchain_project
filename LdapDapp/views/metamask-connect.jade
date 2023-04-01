@@ -1,0 +1,232 @@
+extends layout
+
+block content
+
+    .row
+        .col-md-8.offset-md-2.col-sm-12
+            .card
+                .card-header
+                    h4.font-weight-bold(style="margin:0;") #{title}
+
+                .card-body
+                    p.version
+                    p.account
+            
+    br
+
+    .row
+        .col-md-8.offset-md-2.col-sm-12
+            .card
+                .card-header
+                    h4.font-weight-bold(style="margin:0;") Functions
+                .card-body
+                    .input-group.mb-3
+                        input.func1-input0.form-control(type='number' placeholder="Enter org index" aria-label="Parameter" aria-describedby='basic-addon2', value="0")
+                        .input-group-append
+                            button.func1.btn.btn-primary(type='button') 取得Org位址
+                    
+                    .input-group.mb-3
+                        input.func2-input0.form-control(type='text' placeholder="Enter unique id" aria-label="Parameter" aria-describedby='basic-addon2' required="required")
+                        input.func2-input1.form-control(type='text' placeholder="Enter cn" aria-label="Parameter" aria-describedby='basic-addon2' required="required")
+                        .input-group-append
+                            button.func2.btn.btn-secondary(type='button') 驗證用戶身份
+
+                    .input-group.mb-3
+                        input.func3-input0.form-control(type='text' placeholder="Enter unique id" aria-label="Parameter" aria-describedby='basic-addon2')
+                        .input-group-append
+                            button.func3.btn.btn-info(type='button') 取得用戶DI
+
+                    //- .input-group.mb-3
+                    //-     input.func4-input0.form-control(type='text' placeholder="Enter unique id" aria-label="Parameter" aria-describedby='basic-addon2' required="required")
+                    //-     input.func4-input1.form-control(type='text' placeholder="Enter ethereum address" aria-label="Parameter" aria-describedby='basic-addon2' required="required")
+                    //-     .input-group-append
+                    //-         button.func4.btn.btn-success(type='button') bindAccount(onlyOrg)
+
+                    //- .input-group.mb-3
+                    //-     input.func5-input0.form-control(type='text' placeholder="Enter unique id" aria-label="Parameter" aria-describedby='basic-addon2')
+                    //-     .input-group-append
+                    //-         button.func5.btn.btn-info(type='button') sign data
+
+                    .input-group.mb-3
+                        input.func6-input0.form-control(type='text' placeholder="Enter unique id" aria-label="Parameter" aria-describedby='basic-addon2')
+                        input.func6-input1.form-control(type='text' placeholder="Enter Ethereum address" aria-label="Parameter" aria-describedby='basic-addon2')
+                        .input-group-append
+                            button.func6.btn.btn-danger(type='button') 重新綁定用戶                    
+
+                    button.btn.btn-block.btn-warning.check-log(type='button') Stop log        
+
+    br
+    
+    .row
+        .col-md-8.offset-md-2.col-sm-12
+            .card
+                .card-header
+                    h4.font-weight-bold(style="margin:0;") Logs
+                .card-body
+                    ul.list-group.list-group-flush#log-list
+
+
+    script. 
+        $(function() {
+            let account = "";
+            window.ethereum.on('accountsChanged', function(accounts) {
+                account = accounts[0];
+                $(".account").html("Account:" + account);    
+                $(".func4-input1").val(account);
+            });
+
+            // for web3_bundle.js
+            $.getScript( "/javascripts/web3_bundle.js", async function(data, textStatus, jqxhr) {
+                if (typeof(web3) !== "undefined") {
+                    $(".version").html("API vesion: " + web3.version);
+
+                    web3.eth.getAccounts().then((accounts) => {
+                        account = accounts[0];
+                        $(".account").html("Account:" + account);    
+                        $(".func4-input1").val(account);
+                    });
+
+
+                    let contract_address = "#{address}";
+                    console.log("contract address:", contract_address);
+                    
+                    // TODO: call contract function
+
+                    $(".func1").on("click", function(e) {
+                        // get abi of contract
+                        $.getJSON('/contracts/OrganizationManager.json', function (data) {
+                            let contractInstance = new web3.eth.Contract(data.abi, contract_address);
+                            let input_0 = $(".func1-input0").val();
+
+                            contractInstance.methods.getOrg(input_0).call({from: account})
+                            .then( (result) => {
+                                alert(`Index: ${input_0}\nAddress: ${result}`);
+                            })
+                            .catch( (err) => {
+                                alert(err);
+                            }); 
+                        });
+                    });
+
+                    $(".func2").on("click", function(e) {
+                        let input_0 = $(".func2-input0").val();
+                        let input_1 = $(".func2-input1").val();
+                        $.ajax({
+                            url: 'addUser',
+                            data: { uid: input_0, cn: input_1},
+                            type: 'post',
+                            cache: false,
+                            dataType: 'json',
+                            success: function(res) {
+                                alert(res.msg);
+                            },
+                            error: function(err) {
+                                alert(err);
+                            }
+                        });
+                    });
+
+                    $(".func3").on("click", function(e) {
+                        $.getJSON('/contracts/OrganizationManager.json', function (data) {
+                            let contractInstance = new web3.eth.Contract(data.abi, contract_address);
+                            let input_0 = $(".func3-input0").val();
+                            contractInstance.methods.getId(input_0).call({from: account})
+                            .then( (result) => {
+                                alert(result);
+                            })
+                            .catch( (err) => {
+                                alert(err);
+                            });                
+                        });
+                    });
+
+                    $(".func4").on("click", function(e) {
+                        let input_0 = $(".func4-input0").val();
+                        let input_1 = $(".func4-input1").val();
+                        $.ajax({
+                            url: 'bindAccount',
+                            data: { uid: input_0, address: input_1},
+                            type: 'post',
+                            cache: false,
+                            dataType: 'json',
+                            success: function(res) {
+                                alert(res.msg);
+                            },
+                            error: function(err) {
+                                alert(err);
+                            }
+                        });
+                    });
+
+                    $(".func5").on("click", async function(e) {
+                        let input_0 = $(".func5-input0").val();
+                        await web3.eth.sign(web3.utils.utf8ToHex(input_0), account)
+                        .then( (data) => {
+                            console.log(data);
+                            alert(`Your signature: ${data}`);
+                        })
+                        .catch( (err) => {
+                            alert("sign fail");
+                        })
+                    });
+
+                    $(".func6").on("click", async function(e) {
+                        let input_0 = $(".func6-input0").val();
+                        let input_1 = $(".func6-input1").val();
+                        alert(`${input_0}, ${input_1}`);
+                        
+                        $.getJSON('/contracts/OrganizationManager.json', function (data) {
+                            let contractInstance = new web3.eth.Contract(data.abi, contract_address);
+                            contractInstance.methods.rebindAccount(input_0, input_1).send({from: account})
+                            .then( (result) => {
+                                alert(`Tx: ${result.transactionHash}`);
+                                console.log("object:", result);
+                            })
+                            .catch( (err) => {
+                                alert(err);
+                            }); 
+                        });
+                    });
+
+                    $(".check-log").on("click", async function(e) {
+                        //- clearInterval(refreshIntervalId);
+                        subscription.unsubscribe(function(error, success) {
+                            if (success) {
+                                console.log("Successfully unsubscribed!");
+                                $(".check-log").html("Done");
+                                $(".check-log").attr("disabled", true);
+                            }
+                        });
+                    });
+
+                    let options = {
+                        "fromBlock": "0",
+                        "toBlock": "latest",
+                        "address": contract_address
+                    }
+                    $("#log-list li").remove();
+
+                    let subscription = web3.eth.subscribe('logs', options, function(error, result){
+                        if (!error) {
+                            let start = 2; // "0x"
+                            let r = "";
+                            while(start < result.data.length) {
+                                r += result.data.substring(start, start+64) + "<br><br>";
+                                start += 64;
+                            }
+                            $("#log-list").append(`<li class="list-group-item">Block Num.: ${result.blockNumber}<br><br>Data: <br>${r}tx Hash: ${result.transactionHash}</li>`)
+                            console.log(result);
+                        }
+                    })
+                    .on("connected", function(subscriptionId) {
+                        console.log(`Your subscription ID is ${subscriptionId}`);
+                    })
+                    .on("data", function(log) {
+                        //- console.log(log);
+                    })
+                    .on("changed", function(log) {
+                        //- console.log(log);
+                    });
+                }
+            });
+        });
