@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.8.0;
+pragma solidity >=0.4.25 <0.9.0;
 import "./AccessManager.sol";
 pragma experimental ABIEncoderV2;
 contract OrganizationManager {
@@ -9,7 +9,7 @@ contract OrganizationManager {
          }
     }
     
-    function() external {
+    fallback() external {
         // fallback function
     }
     
@@ -21,11 +21,11 @@ contract OrganizationManager {
     }
     
     // Pre-registered organization
-    address[] _orgsArr = [0x1F7F0f7Be634D340EB070f3f3C21b6cE4ab857BD, 
-                            0xA3e898C280220bf5fAE9e7e6ceB4F3a6BFa67163,
-                            0x18db34baE039C54aA2B56BDF59ff380d29BffeD7,
-                            0xF799b4462423B551cF404a3688C03051A2BE7359,
-                            0x8423B7478160163c6e3319E64a6Ad4B77dfb7015];
+    address[] _orgsArr = [  0x88F49872957691A64D6E3f73c271f35Ade9B0805, 
+                            0xfEA00332F1224F03ceEd15a277A9297492bf5954,
+                            0x006a1566c1A3D6fBf99514683675001C2FA9cb5f,
+                            0xfA1062E880e512090e08d8DbDDbb72A523b0bf7d,
+                            0xD1F8f56aE42A23c9Ad3D6D903eBB2dD14698cFD0];
     
     // Pre-registered attributes
     string[] _attributes = ["deposit", "pii", "aaa"];
@@ -74,13 +74,13 @@ contract OrganizationManager {
         }
         else {
             _uniqueState[hashed] = true;
-            UserInfo memory info = UserInfo(
-                                        msg.sender,
-                                        address(0),
-                                        address(0)
-                                    );
-            _uniqueIdenity[hashed] = info;
-            _uniqueIdenity[hashed].orgs[msg.sender] = true;
+            UserInfo storage info = _uniqueIdenity[hashed];
+
+            info.lastModifyOrg = msg.sender;
+            info.accessManagerAddress = address(0);
+            info.userAddress = address(0);                          
+                                    
+            info.orgs[msg.sender] = true;
             emit AddUserEvent(msg.sender, 1);
         }
     }
