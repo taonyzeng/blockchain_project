@@ -197,7 +197,8 @@ server.search(SUFFIX, authorize, function(req, res, next) {
     return next(new ldap.NoSuchObjectError(dn));
 
   var scopeCheck;
-  console.log("SEARCH", dn);
+  console.log("New SEARCH", dn);
+  console.log("Req Scope: ", req.scope);
   switch (req.scope) {
   case 'base':
     if (req.filter.matches(db[dn])) {

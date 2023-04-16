@@ -157,6 +157,8 @@ router.post('/bindAccount', isAuthenticated, async function (req, res, next) {
         hash = "";
     let idStatus = false;
 
+
+    console.log("web3 address: ", config.web3_provider);
     console.log("profile id", userId);
     console.log("profile address", userAddress);
 
@@ -167,6 +169,7 @@ router.post('/bindAccount', isAuthenticated, async function (req, res, next) {
     };
     let searchResult = await user.userSearch(opts, 'ou=location2,dc=jenhao,dc=com');
     if (searchResult.length === 1) {
+        console.log("searchResult: ", searchResult[0]);
         let userObject = JSON.parse(searchResult[0]);
         idStatus = (userObject.idstatus === '0') ? false : true;
     } else {
@@ -188,6 +191,9 @@ router.post('/bindAccount', isAuthenticated, async function (req, res, next) {
         let hashedId = await contractInstance.methods.getId().call({
             from: userAddress
         });
+
+        console.log("User Address HashedID: ", hashedId);
+
         // 檢查欲綁定的ADD是否未曾使用過
         if (hashedId === "0x0000000000000000000000000000000000000000000000000000000000000000") {
             console.log("not used before");
@@ -208,7 +214,11 @@ router.post('/bindAccount', isAuthenticated, async function (req, res, next) {
 
             // 對要發送出去的交易做簽名
             let signedTxObj;
+            console.log("start to bindAccount with userID:  ", userId, ",userAddress: ", userAddress );
             let tx_builder = contractInstance.methods.bindAccount(userId, userAddress);
+
+            console.log("Called bindAccount in contract!")
+
             let encode_tx = tx_builder.encodeABI();
             let transactionObject = {
                 gas: 6721975,
@@ -216,41 +226,47 @@ router.post('/bindAccount', isAuthenticated, async function (req, res, next) {
                 from: admin_address,
                 to: contract_address
             }
+
+            console.log("start to  signTransaction...")
             await web3.eth.accounts.signTransaction(transactionObject, config.admin_key, async function (error, signedTx) {
                 if (error) {
                     console.log("sign error");
                 } else {
                     signedTxObj = signedTx;
+                    console.log("SignTransaction done...")
                 }
             })
 
             // 發送交易
             web3.eth.sendSignedTransaction(signedTxObj.rawTransaction)
-                // .on('receipt', function (receipt) {
-                //     console.log(receipt);
-                //     return res.send({
-                //         msg: `${req.body.uid}-${receipt.transactionHash}`
-                //     });
-                // })
-                .once('transactionHash', async function(hash){
+                .on('transactionHash', async function(hash){
+                    msg = `OK, i got it, this is your transaction hash: ${hash}`;
+                    console.log(msg);
+
                     let job = await subscribeQueue.add({
                         txHash: hash,
                         dn: req.user.dn
                     });
-                    console.log(`Create a job, jodId: ${job.id}`);     
-                    msg = `OK, i got it, this is your transaction hash: ${hash}`;
+                    console.log(`Create a job, jodId: ${job.id}`);    
+
                     res.send({
                         msg: msg,
                         status: true,
                         txHash: hash
                     });               
                 })
+                .on('receipt', function (receipt) {
+                    console.log('Got the receipt: ', receipt); 
+                })
+                .on('confirmation', function(confirmationNumber, receipt){  
+                    console.log('Transaction confirmed, confirmed number: ', confirmationNumber);
+                })
                 .on('error', function (error) {
                     console.log(`Send signed transaction failed! Error message as follows.`);
                     console.log(error)
-                    // return res.status(500).send({
-                    //     msg: "error"
-                    // });
+                    return res.status(500).send({
+                        msg: "error"
+                    });
                 })
         } else {
             // ADD 曾經使用過
