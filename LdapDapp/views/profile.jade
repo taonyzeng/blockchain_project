@@ -22,19 +22,19 @@ block content
                                             td 
                                                 span #{val}
                                                 if (idx == 'id' && user.idstatus == 0)
-                                                    span.float-right.px-2(style="color:red; text-decoration: underline dotted; border: solid 1.5px; border-radius: 8px") 尚未驗證
+                                                    span.float-right.px-2(style="color:red; text-decoration: underline dotted; border: solid 1.5px; border-radius: 8px") Not yet verified
                                                 else if (idx == 'id' && user.idstatus == 1)
-                                                    span.float-right.px-2(style="color:green; text-decoration: underline dotted; border: solid 1.5px; border-radius: 8px") 通過驗證
+                                                    span.float-right.px-2(style="color:green; text-decoration: underline dotted; border: solid 1.5px; border-radius: 8px") Verified
 
-                    button.btn.btn-block.btn-primary(type='button' data-toggle='modal', data-target='#updateModal') 修改
+                    button.btn.btn-block.btn-primary(type='button' data-toggle='modal', data-target='#updateModal') Modify
                     br
                     br                    
                     .alert.alert-warning.alert-dismissible.fade.show(role='alert')
                         .status
                             if (user.hashed == "")
-                                | 尚未完成綁定
+                                | Not yet bound
                             else
-                                | 已完成綁定
+                                | Bound
                         button.close(type='button' data-dismiss='alert' aria-label='Close')
                             span(aria-hidden='true') ×
 
@@ -42,7 +42,7 @@ block content
     .row
         .col-md-8.offset-md-2
             if (user.hashed == "")
-                button.btn.btn-block.btn-outline-info.bind-btn(type='button' data-toggle='modal' data-target='#bindModal') 使用 Metamask 綁定帳號
+                button.btn.btn-block.btn-outline-info.bind-btn(type='button' data-toggle='modal' data-target='#bindModal') Use Metamask to bind the account
     .row.my-2
         .col-md-8.offset-md-2
             button.btn.btn-block.btn-outline-primary.increase-btn(type='button') For test
@@ -53,16 +53,16 @@ block content
             .card
                 .card-header
                     h4.font-weight-bold(style="margin:0;")
-                        | Invoice List
+                        | Bill List
                 .card-body
                     table.table.table-bordered
                         thead
                             tr
-                                th(scope='col') 帳單編號
-                                th(scope='col') 客戶名稱
-                                th(scope='col') 描述
-                                th(scope='col') 發票日期
-                                th(scope='col') 總計金額
+                                th(scope='col') Bill No.
+                                th(scope='col') Patient name
+                                th(scope='col') Description
+                                th(scope='col') Bill Date
+                                th(scope='col') Total
                         tbody
                             each val, idx in invoices
                                 tr
@@ -77,7 +77,7 @@ block content
             .modal-content
                 .card.text-center
                     .card-header(style="font-size: 1.5rem; font-weight:bold")
-                        | 帳號綁定
+                        | Account binding
                         button.close(type='button' data-dismiss='modal' aria-label='Close')
                             span(aria-hidden='true') ×
                 .card-body
@@ -90,10 +90,10 @@ block content
                         
                         .input-group.mt-3
                             .input-group-prepend
-                                span.input-group-text(id='') 身份證字號
+                                span.input-group-text(id='') ID
                             input.form-control#identityId(type='text' name='identityId' placeholder="Identity card ID" required="required")
 
-                        input.btn.btn-info.btn-lg.btn-block.mt-4.submit-bind-btn(type='button' value='送出')
+                        input.btn.btn-info.btn-lg.btn-block.mt-4.submit-bind-btn(type='button' value='Send')
 
     #updateModal.modal.fade(tabindex='-1' role='dialog' aria-hidden='true')
         .modal-dialog(role='document')
@@ -109,20 +109,20 @@ block content
                         if (user.id)
                             .input-group.mt-3
                                 .input-group-prepend
-                                    span.input-group-text(id='') 身份證字號
+                                    span.input-group-text(id='') ID
                                 if (user.idstatus === "1")
                                     input.form-control#updateIdentityId(type='text' name='identityId' placeholder="Identity card ID" required="required" value="#{user.id}" readonly="readonly" style="background-color: white;")
                                 else
                                     input.form-control#updateIdentityId(type='text' name='identityId' placeholder="Identity card ID" required="required" value="#{user.id}")
                         .input-group.mt-3
                             .input-group-prepend
-                                span.input-group-text(id='') 電子郵件
+                                span.input-group-text(id='') Email
                             input.form-control#updateEmail(type='email' name='email' placeholder="Email" required="required" value="#{user.mail}")
                         .input-group.mt-3
                             .input-group-prepend
-                                span.input-group-text(id='') 行動電話
+                                span.input-group-text(id='') Phone number
                             input.form-control#updatePhone(type='tel' name='phone' placeholder="Phone number" required="required" value="#{user.phone}")
-                        input.btn.btn-info.btn-lg.btn-block.mt-4.submit-update-btn(type='button' value='送出')
+                        input.btn.btn-info.btn-lg.btn-block.mt-4.submit-update-btn(type='button' value='Send')
 
     script. 
         $(function() {

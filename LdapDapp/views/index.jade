@@ -13,22 +13,22 @@ block content
         .col-md-6.center-block.offset-md-3
             .card.text-center
                 .card-header(style="font-size: 1.5rem; font-weight:bold")
-                    | 登入系統
+                    | System Login
                 .card-body
                     h5.card-title 
                     form(action='/users/login' method='post')
                         .input-group
                             //- .input-group-prepend
                             //-     span.input-group-text(id='') 使用者名稱
-                            input.form-control(type='text' name='username' placeholder="使用者名稱" required="required")
+                            input.form-control(type='text' name='username' placeholder="Username" required="required")
                         .input-group.mt-3
                             //- .input-group-prepend
                             //-     span.input-group-text(id='') 密碼
-                            input.form-control(type='password' name='password' placeholder="密碼" data-toggle="password" required="required")
-                        input.btn.btn-primary.btn-lg.btn-block.mt-3(type='submit' value='登入')
-                        p.mt-2.text-left 還沒有帳戶？ <a href="#" data-toggle='modal' data-target='#registerModal'>立即註冊</a>
-                        p 或是
-                        button.btn.btn-outline-info.btn-lg.btn-block.loadInfo(type='button' data-toggle='modal' data-target='#confirmModal') 使用 Ethereum 帳戶登入
+                            input.form-control(type='password' name='password' placeholder="Password" data-toggle="password" required="required")
+                        input.btn.btn-primary.btn-lg.btn-block.mt-3(type='submit' value='Sign in')
+                        p.mt-2.text-left No account? <a href="#" data-toggle='modal' data-target='#registerModal'>Sign up</a>
+                        p Or
+                        button.btn.btn-outline-info.btn-lg.btn-block.loadInfo(type='button' data-toggle='modal' data-target='#confirmModal') Sign in with Ethereum account
                         button.btn.btn-outline-success.btn-lg.btn-block(type='button' onclick="javascript:location.href='/metamask-connect/'") Metamask Test Page
 
     // Register Modal
@@ -37,7 +37,7 @@ block content
             .modal-content
                 .card.text-center
                     .card-header(style="font-size: 1.5rem; font-weight:bold")
-                        | 註冊
+                        | Account Register
                         button.close(type='button' data-dismiss='modal' aria-label='Close')
                             span(aria-hidden='true') ×
                 .card-body
@@ -45,45 +45,45 @@ block content
                     form(action='/api/user' method='post')
                         .input-group
                             .input-group-prepend
-                                span.input-group-text(id='') 使用者名稱
+                                span.input-group-text(id='') Username
                             input.form-control(type='text' name='username' placeholder="Username" required="required")
                         .input-group.mt-3
                             .input-group-prepend
-                                span.input-group-text(id='') 密碼
+                                span.input-group-text(id='') Password
                             input.form-control(type='password' name='password' placeholder="Password" required="required")
                         .input-group.mt-3
                             .input-group-prepend
-                                span.input-group-text(id='') 密碼確認
+                                span.input-group-text(id='') Confirm Password
                             input.form-control(type='password' name='confirmPassword' placeholder="Confirm password" required="required")
                         .input-group.mt-3
                             .input-group-prepend
-                                span.input-group-text(id='') 電子郵件
+                                span.input-group-text(id='') Email
                             input.form-control(type='email' name='email' placeholder="Email" required="required")
                         .input-group.mt-3
                             .input-group-prepend
-                                span.input-group-text(id='') 行動電話
+                                span.input-group-text(id='') Phone Number
                             input.form-control(type='tel' name='phone' placeholder="Phone number" required="required")
                         .input-group.mt-3
                             .input-group-prepend
-                                span.input-group-text(id='') 身份證字號
+                                span.input-group-text(id='') Identification Number
                             input.form-control(type='text' name='id' placeholder="Identification card number")
-                        input.btn.btn-success.btn-lg.btn-block.mt-4(type='submit' value='註冊')
+                        input.btn.btn-success.btn-lg.btn-block.mt-4(type='submit' value='Sign up')
     
     // Confirm Dialog
     #confirmModal.modal.fade(tabindex='-1' role='dialog')
         .modal-dialog(role='document')
             .modal-content
                 .modal-header
-                    h5.modal-title 系統訊息
+                    h5.modal-title System Message
                     button.close(type='button' data-dismiss='modal' aria-label='Close')
                         span(aria-hidden='true') ×
                 .modal-body
-                    p 是否使用該帳戶登入?
-                    p 目前帳戶(Address)
+                    p Login with this account?
+                    p Current account (Address)
                     p.address.text-uppercase.font-weight-bold.text-center ...
                 .modal-footer
-                    button.btn.btn-primary.loginWithMetamask(type='button') 繼續
-                    button.btn.btn-secondary(type='button' data-dismiss='modal') 關閉
+                    button.btn.btn-primary.loginWithMetamask(type='button') Continue
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
 
     script. 
         $(function() {
@@ -117,7 +117,7 @@ block content
                         contractInstance.methods.getId().call({from: account})
                         .then( (result) => {
                             if (result === emptyAddress)
-                                return Promise.reject("該帳戶尚未進行綁定！");
+                                return Promise.reject("This account has not been bound!");
                             else {
                                 // Sign the identity and then send to server
                                 return Promise.resolve(result);

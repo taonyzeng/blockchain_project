@@ -4,127 +4,127 @@ block content
     .col-md-6.center-block.offset-md-3(style="display: none;")
         .card.text-center
             .card-header(style="font-size: 1.5rem; font-weight:bold")
-                | 我要開戶
+                | Open an account
             .card-body.text-left
                 form(action='/users/oao' enctype="multipart/form-data" method='post')
                     .col-12                   
                         label.form-label(for='account')
-                            | 區塊鏈帳戶
-                            span.text-muted (Current Ethereum address)
+                            | Blockchain account
+                            span.text-muted  (Current Ethereum address)
                         input.form-control.current-account(type='text' name='ethAccount' value='...' readonly style='background-color:white') 
                     .col-12.mt-3
                         label.form-label(for='select')
-                            | 選擇他行銀行
+                            | Select other hospital
                         .input-group
                             select#inputGroupSelect02.custom-select(name='selectedBank' required)
-                                option(value='') 選擇銀行...
+                                option(value='') Select hospital...
                                 option(value='1') One
                                 option(value='2') Two
                                 option(value='3') Three
                     .col-12.mt-3
                         label.form-label(for='select')
-                            | 上傳身份證件
+                            | Upload ID
                         //    
                             .input-group
                                 .custom-file
                                     input#id-doc-input.custom-file-input(type='file' name="idDoc" accept="image/png, image/jpeg" required)
-                                    label.custom-file-label(for='id-doc-input') 選擇檔案
+                                    label.custom-file-label(for='id-doc-input') select document
                     hr.my-4
                     .col-12.mt-3 
                         .form-check 
                             input.form-check-input(type="checkbox" required)
-                            label.form-check-label(for='checkregulation') 我已詳閱並同意 OOO 條款
+                            label.form-check-label(for='checkregulation') I have read and agree to the OOO term
                     .col-6.mt-3.offset-md-3
-                        input.btn.btn-outline-info.btn-block(type='submit' value="開戶&授權") 
+                        input.btn.btn-outline-info.btn-block(type='submit' value="account opening and authorization") 
             .card-footer.text-muted.text-left(style="font-size: 0.875rem;")
                 .mb-2.pl-2
-                    | 開戶＆授權前的準備提醒
+                    | Tips before account opening and authorization
                 .mb-2.pl-2                    
                     i.far.fa-star
-                        | &nbsp 開戶：身分證件(健保卡、駕照、學生證或護照正面照片)。
+                        | &nbsp Account opening: ID (Driver's license or Passport or SSN)
                 .mb-2.pl-2                    
                     i.far.fa-star
-                        | &nbsp 授權：透過區塊鏈授權取得他行銀行帳戶資料。
+                        | &nbsp Authorization: Get other hospital account information through blockchain authorization
 
     .col-md-6.center-block.offset-md-3
         .card.text-center
             .card-header(style="font-size: 1.5rem; font-weight:bold")
-                | 我要開戶
+                | Open an account
             .card-body.text-left                
                 form#msform.needs-validation(action='/users/oao' enctype="multipart/form-data" method='post' novalidate)
                     // progressbar
                     ul#progressbar
                         li#account.icon.active
-                            strong 填寫個人資料
+                            strong Fill in personal information
                         li#auth.icon
-                            strong 授權銀行存取資料
+                            strong Authorize hospital to access data
                         li#confirm.icon
-                            strong 完成
+                            strong Complete
                     // fieldsets
                     fieldset
                         .form-card
                             .col-12                   
                                 label.form-label(for='account')
-                                    | 區塊鏈帳戶
-                                    span.text-muted (Current Ethereum address)
+                                    | Blockchain account
+                                    span.text-muted  (Current Ethereum address)
                                 input.form-control.current-account(type='text' name='ethAccount' value='...' readonly style='background-color:white') 
                             .col-12.mt-3
                                 label.form-label(for='select')
-                                    | 選擇他行銀行
+                                    | Select other hospital
                                 .input-group
                                     select#inputBankSelect.custom-select.form-select(name='selectedBank' required)
                                     .invalid-feedback
-                                        | 請選擇任一間擁有帳戶之銀行
+                                        | Please select any hospital where you have an account
                             .col-12.mt-3
                                 label.form-label(for='select')
-                                    | 上傳身份證件                   
+                                    | Upload ID                   
                                     .custom-file
                                         input#id-doc-input.custom-file-input(type='file' name="idDoc" accept="image/png, image/jpeg" required)
-                                        label.custom-file-label(for='id-doc-input') 選擇檔案
+                                        label.custom-file-label(for='id-doc-input') Select document
                                         .invalid-feedback
-                                            | 請上傳您的身份證件                                        
+                                            | Please upload your ID                                        
                             .col-12.mt-3      
                                 label.form-label(for='account')
-                                    | 聯絡資訊
+                                    | Contact
                                 .input-group 
-                                    input.form-control(type='text', name='phone', placeholder='手機號碼' required)
+                                    input.form-control(type='text', name='phone', placeholder='Phone number' required)
                                     .invalid-feedback
-                                        | 請輸入手機號碼
+                                        | Please enter your phone number
                                 .input-group.mt-2
-                                    input.form-control(type='email', name='email', placeholder='電子郵件' required)
+                                    input.form-control(type='email', name='email', placeholder='Email' required)
                                     .invalid-feedback
-                                        | 請輸入電子郵件                                                                    
+                                        | Please enter your email                                                                    
                             hr.my-4
                             .col-12.mt-3 
                                 .input-group
                                     .form-check
                                         input.form-check-input(type="checkbox" style="display: inline-block" required)
-                                        label.form-check-label(for='checkregulation') 我已詳閱並同意 OOO 條款
+                                        label.form-check-label(for='checkregulation') I have read and agree to the OOO term
                                         .invalid-feedback
-                                            | 送出前，請勾選並遵守以上條款
-                        input.next.action-button(type='button' name='next' value='下一步')
+                                            | Please check and agree to the term before continue
+                        input.next.action-button(type='button' name='next' value='Next')
                     fieldset
                         .form-card
                             .col-12.text-center      
                                 p 
-                                    | 當前&nbsp 
+                                    | Current&nbsp 
                                     span.current-bank(style="font-weight:bold; box-shadow: 0 1px; padding-bottom:2px") ...
-                                    | &nbsp將收到來自&nbsp 
+                                    | &nbsp will receive PII data from&nbsp 
                                     span.selected-bank(style="font-weight:bold; box-shadow: 0 1px; padding-bottom:2px") ...
-                                    | &nbsp的個人資料(PII)等資訊。
+                                    | &nbsp.
                                 p 
-                                    | 目前授權狀態為&nbsp 
-                                    span.current-state(style="color: red; font-weight:bold; box-shadow: 0 1px; padding-bottom:2px") 未授權
+                                    | Current status is &nbsp 
+                                    span.current-state(style="color: red; font-weight:bold; box-shadow: 0 1px; padding-bottom:2px") Not authorized
                                     | &nbsp。
-                                    span.text-muted (若已授權，無須再次授權)
+                                    span.text-muted (No need to get authorized if already authorized)
                             .col-6.offset-3
-                                button.btn.btn-primary.btn-block.confirm-approved-btn(type='button') 授權
+                                button.btn.btn-primary.btn-block.confirm-approved-btn(type='button') Auth
                         hr.my-4
-                        input.previous.action-button-previous(type='button' name='previous' value='上一步')
-                        input.confirm-and-submit-btn.action-button(type='button' name='make_payment' value='確認送出')
+                        input.previous.action-button-previous(type='button' name='previous' value='previous')
+                        input.confirm-and-submit-btn.action-button(type='button' name='make_payment' value='Confirm to send')
                     fieldset
                         .form-card
-                            h2.fs-title.text-center 申請成功 !
+                            h2.fs-title.text-center application success !
                             br
                             br
                             .row.justify-content-center
@@ -134,16 +134,16 @@ block content
                             br
                             .row.justify-content-center
                                 .col-7.text-center
-                                    h5 已送件，待帳戶啟用。
+                                    h5 Send and ready for account activation
             .card-footer.text-muted.text-left(style="font-size: 0.875rem;")
                 .mb-2.pl-2
-                    | 開戶＆授權前的準備提醒
+                    | Tips before account opening and authorization
                 .mb-2.pl-2                    
                     i.far.fa-star
-                        | &nbsp 開戶：身分證件(健保卡、駕照、學生證或護照正面照片)。
+                        | &nbsp Account opening: ID (Driver's license or Passport or SSN)
                 .mb-2.pl-2                    
                     i.far.fa-star
-                        | &nbsp 授權：透過區塊鏈授權取得他行銀行帳戶資料。                                    
+                        | &nbsp Authorization: Get other hospital account information through blockchain authorization                                    
 
     script. 
         $(function() {
@@ -180,7 +180,7 @@ block content
                     // Show banks that the user had registered.
                     contractOrgInstance.methods.getOrgList().call({from: account})
                     .then( async (orgs) => { // orgList      
-                        $("#inputBankSelect").append(new Option("選擇銀行..", '', true, true));
+                        $("#inputBankSelect").append(new Option("Select hospital..", '', true, true));
                         for (var i = 0; i < orgs.length; i++) {
                             console.log(i, orgs[i]);
                             await contractOrgInstance.methods.isRegistered(orgs[i]).call({from: account})
@@ -216,7 +216,7 @@ block content
                         .then( () => {
                             contractAccInstance.methods.validatePermission("pii", target_address, this.value).call({from: account})
                             .then( (r) => {
-                                let txt = (r) ? "已授權" : "未授權";
+                                let txt = (r) ? "Authorized" : "Not authorized";
                                 let clr = (r) ? "green" : "red";
                                 $('.current-state').text(txt);
                                 $('.current-state').css({"color": clr});
@@ -232,7 +232,7 @@ block content
                         .on('receipt', function(receipt){
                             console.log(`receipt:`, receipt);
                             console.log(`log got:`, receipt.events.AccessAuthorization.returnValues);
-                            $('.current-state').text("已授權");
+                            $('.current-state').text("Authorized");
                             $('.current-state').css({"color": "green"});
                         });
                     });

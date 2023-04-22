@@ -15,7 +15,7 @@ block content
                         .row.my-2
                             .col-12 
                                 .form-group.row
-                                    label.col-sm-4.col-form-label.font-weight-bold(for='staticEmail') Address of TSP
+                                    label.col-sm-4.col-form-label.font-weight-bold(for='staticEmail') Address of Authority
                                     .col-sm-8
                                         input#staticEmail.form-control-plaintext(type='text' readonly='' value="#{org_address}")                        
                         
@@ -30,7 +30,7 @@ block content
                                     .row
                                         .col-12
                                             .form-group
-                                                label(for='attrFormControlSelect1') 選擇欲授權的資料
+                                                label(for='attrFormControlSelect1') Select pre-authorized document
                                                 select#attrFormControlSelect1.form-control
 
                                         .col-12
@@ -46,8 +46,8 @@ block content
                                         .col-12
                                             .text-right
                                                 //- button.btn.btn-primary.auth-btn.mr-2(type='button') 授權
-                                                button.btn.btn-primary.mr-2.confirm-btn(type='button' data-toggle='modal', data-target='#infoModal') 授權
-                                                button.btn.btn-danger.revoke-btn(type='button') 撤回
+                                                button.btn.btn-primary.mr-2.confirm-btn(type='button' data-toggle='modal', data-target='#infoModal') Auth
+                                                button.btn.btn-danger.revoke-btn(type='button') Revoke
 
                             #mode2.tab-pane.fade(role='tabpanel' aria-labelledby='mode2-tab')
                                 .container
@@ -64,8 +64,8 @@ block content
                                         .col-12
                                             .text-right
                                                 //- button.btn.btn-primary.auth-btn.mr-2(type='button') 授權
-                                                button.btn.btn-primary.mr-2.confirm-one-approved-btn(type='button' data-toggle='modal', data-target='#infoModal') 授權
-                                                button.btn.btn-danger.revoke-one-approved-btn(type='button') 撤回
+                                                button.btn.btn-primary.mr-2.confirm-one-approved-btn(type='button' data-toggle='modal', data-target='#infoModal') Auth
+                                                button.btn.btn-danger.revoke-one-approved-btn(type='button') Revoke
 
 
 
@@ -73,14 +73,14 @@ block content
                             .col-md-6.col.my-2
                                 .card
                                     .card-header
-                                        | 總資產
+                                        | Total bills
                                     .card-body
                                         h5.total-deposit.text-right.my-1.font-weight-bold
                                         canvas#myDoughnut(width='400' height='400')
                             .col-md-6.col.my-2
                                 .card
                                     .card-header
-                                        | 總帳單
+                                        | Pending bills
                                     .card-body
                                         canvas#myLine(width='400' height='400')
 
@@ -108,19 +108,19 @@ block content
         .modal-dialog(role='document')
             .modal-content
                 .modal-header
-                    h5.modal-title 通知
+                    h5.modal-title Notification
                     button.close(type='button' data-dismiss='modal' aria-label='Close')
                         span(aria-hidden='true') ×
                 .modal-body
-                    | 您是否要授權
+                    | Do you want to authorize
                     span.font-weight-bold
-                        | 當前TSP
-                    | 存取您在下列機構的資料？
+                        | Current TSP
+                    | Store info in the institutions below?
                     .confirm-list.font-weight-bold
                 .modal-footer
-                    button.btn.btn-secondary(type='button' data-dismiss='modal') 取消
-                    button.btn.btn-info.auth-btn(type='button' data-dismiss='modal') 確認
-                    button.btn.btn-primary.auth-one-approved-btn(type='button' data-dismiss='modal') 確認
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
+                    button.btn.btn-info.auth-btn(type='button' data-dismiss='modal') Confirm
+                    button.btn.btn-primary.auth-one-approved-btn(type='button' data-dismiss='modal') Confirm
 
 
     script. 
@@ -158,7 +158,7 @@ block content
                     contractOrgInstance.methods.getOrgList().call({from: account})
                     .then( (result) => { // orgList
                         //- alert(`Index: 0, Address: ${result}`);
-                        console.log(result);
+                        console.log(`Index: 0, Org Address: ${result}`);
 
                         contractOrgInstance.methods.getAccessManagerAddress(account).call({from: account})
                         .then( (r) => {
@@ -186,10 +186,11 @@ block content
                             // For initial attribute in mode 1
                             for (let i = 0; i < result.length; ++i) {
                                 if (result[i] == target_address) continue;
-                                let fullName = org_mapping["0x"+result[i].substr(2).toUpperCase()][1];
+                                let fullName = org_mapping["0x"+result[i].substr(2)];
+                                console.log(`org full name: ${fullName}`)
                                 contractAccInstance.methods.validatePermission(selectAttr, target_address, result[i]).call({from: account})
                                 .then( (r) => {
-                                    console.log(r);
+                                    console.log(`validatePermission result: ${r}`);
                                     $("#org-table>tbody").append(`
                                         <tr>
                                             <td>
@@ -213,7 +214,7 @@ block content
                                 $("#org-table>tbody").empty();
                                 for (let i = 0; i < result.length; ++i) {
                                     if (result[i] == target_address) continue;
-                                    let fullName = org_mapping["0x"+result[i].substr(2).toUpperCase()][1];
+                                    let fullName = org_mapping["0x"+result[i].substr(2)];
                                     contractAccInstance.methods.validatePermission(selectAttr, target_address, result[i]).call({from: account})
                                     .then( (r) => {
                                         console.log(r);
@@ -271,7 +272,7 @@ block content
                         $(".confirm-list").html("");
                         $.each($("input[name=orgAddress]:checked"), function() {
                             selected.push($(this).val());
-                            fullName = org_mapping["0x"+($(this).val()).substr(2).toUpperCase()][1];
+                            fullName = org_mapping["0x"+($(this).val()).substr(2)];
                             $(".confirm-list").html($(".confirm-list").html()+"<br>"+fullName);
                         });
                         $(".auth-one-approved-btn").hide();
@@ -417,7 +418,7 @@ block content
                             .then( async () => {                                
                                 for (let i = 0; i < result.length; ++i) {
                                     if (target_address === result[i]) continue;
-                                    validList.push(result[i].toUpperCase());
+                                    validList.push(result[i]);
                                     //- await contractAccInstance.methods.validatePermission(selectAttr, target_address, result[i]).call({from: account})
                                     //- .then( (r) => {
                                     //-     if (r) {
@@ -455,7 +456,7 @@ block content
                     // Calculate balance
                     let deposit = [#{user.balance}];
                     //- let orgs = ["#{org_address}".substr(0,5)];
-                    let orgs = [org_mapping["0x"+"#{org_address}".substr(2).toUpperCase()][1]];
+                    let orgs = [org_mapping["0x"+"#{org_address}".substr(2)]];
                     
 
 
@@ -465,7 +466,7 @@ block content
                     for (let i = 0; i < a.length; ++i) {
                         deposit.push(a[i]);
                         //- orgs.push(b[i]);
-                        orgs.push(org_mapping["0x"+b[i].substr(2).toUpperCase()][1]);
+                        orgs.push(org_mapping["0x"+b[i].substr(2)]);
                     }
 
                     total = deposit.reduce((a,b)=>parseInt(a, 0)+parseInt(b,0));
@@ -526,7 +527,7 @@ block content
 
                     // replace with fullname
                     for (let i = 0; i < uniqueOrg.length; ++i) {
-                        uniqueOrg[i] = org_mapping["0x"+uniqueOrg[i].substr(2).toUpperCase()][1]
+                        uniqueOrg[i] = org_mapping["0x"+uniqueOrg[i].substr(2)];
                     }
 
 
