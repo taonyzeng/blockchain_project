@@ -21,15 +21,15 @@ contract OrganizationManager {
     }
     
     // Pre-registered organization
-    address[] _orgsArr = [  0x88F49872957691A64D6E3f73c271f35Ade9B0805, 
-                            0xfEA00332F1224F03ceEd15a277A9297492bf5954,
-                            0x006a1566c1A3D6fBf99514683675001C2FA9cb5f,
-                            0xfA1062E880e512090e08d8DbDDbb72A523b0bf7d,
-                            0xD1F8f56aE42A23c9Ad3D6D903eBB2dD14698cFD0];
+    address[] _orgsArr = [  0x843946636443b85B8B935B11f92fe9eE00dE74b4, 
+                            0xF620f51921615d4E3AfF6fCaB989be5Ed6C3e52E,
+                            0x02EacF91bC43144A221913Aa367F3cCa550887bb,
+                            0xE01E58DAc2Aa1f4756dC74DD65619dbb8F115758,
+                            0xA4939a2d44bacF7010951275De195A4ebd2E9FdC];
     
     // Pre-registered attributes
-    string[] _attributes = ["deposit", "pii", "aaa"];
-    string[] _oneApprovedAttrs = ["bill", "bbb", "ggg"];
+    string[] _attributes = ["Basic Information", "Contact Information", "Dependents Info", "Spouse Info", "Pending Bills", "Paid Bills"];
+    string[] _oneApprovedAttrs = ["Basic", "Address", "phoneNO", "SSN", "Email", "Prescription History", "Medical History", "Immunization  Records", "Bills"];
 
     // Permission of user and organization
     mapping (address => bool) _orgs;
@@ -92,14 +92,15 @@ contract OrganizationManager {
     )
         public onlyOrg
     {
-        require(_bindUsers[userAddress] == 0,
-                "This address already binded.");
-        require(_bindState[keccak256(bytes(uniqueId))] == false,
-                "This UniqueId already binded");
-        require(_uniqueState[keccak256(bytes(uniqueId))],
-                "UniqueId invalid.");
         bytes32 hashed = keccak256(bytes(uniqueId));
 
+        require(_bindUsers[userAddress] == 0,
+                "This address already binded.");
+        require(_bindState[hashed] == false,
+                "This UniqueId already binded");
+        require(_uniqueState[hashed],
+                "UniqueId invalid.");
+ 
         _bindUsers[userAddress] = hashed;    // for record address <==> hashed id
         _bindState[hashed] = true;           // for confirm this hashed id already bind before
         _users[userAddress] = true;          // for modifier onlyUser
